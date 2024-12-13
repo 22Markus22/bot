@@ -1,1 +1,21 @@
-print('hello world')
+import asyncio
+import logging
+from aiogram import Bot, Dispatcher
+from aiogram.enums.parse_mode import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.client.default import DefaultBotProperties
+import config
+from handlers import router
+
+bd = []
+
+async def main():
+    bot = Bot(token=config.BOT_TOKEN,default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    dispatcher = Dispatcher(storage=MemoryStorage())
+    dispatcher.include_router(router)
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dispatcher.start_polling(bot, allowed_updates= dispatcher.resolve_used_update_types())
+
+if __name__=='__main__':
+    logging.basicConfig(level=logging.INFO)
+    asyncio.run(main())
