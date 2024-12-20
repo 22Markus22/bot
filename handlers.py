@@ -14,10 +14,12 @@ class Registration(StatesGroup):
     tel_number = State()
 
 router = Router()
+global data
 
 @router.message(Registration.name)
 async def registration_step_1(msg:Message, state: FSMContext):
     await state.update_data(name = msg.text)
+    await state.update_data(telegram_user_id = msg.from_user.id)
     if  2<=len(msg.text)<=32:
         await msg.answer('Введите свою фамилию')
         await state.set_state(Registration.surname)
